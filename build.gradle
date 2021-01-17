@@ -1,0 +1,95 @@
+plugins {
+    id 'java'
+}
+
+
+group 'automation-framework'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+wrapper {
+    gradleVersion = '6.8'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+
+dependencies {
+    // https://mvnrepository.com/artifact/org.testng/testng
+    // Using testNG as test engine
+    testImplementation group: 'org.testng', name: 'testng', version: '7.3.0'
+
+    // https://mvnrepository.com/artifact/io.cucumber/cucumber-java
+    // Cucumber java
+    implementation group: 'io.cucumber', name: 'cucumber-java', version: '6.7.0'
+
+    // https://mvnrepository.com/artifact/io.cucumber/cucumber-core
+    // Cucumber core
+    implementation group: 'io.cucumber', name: 'cucumber-core', version: '6.7.0'
+
+    // https://mvnrepository.com/artifact/io.cucumber/cucumber-testng
+    // Cucumber-testNG compatibility
+    implementation group: 'io.cucumber', name: 'cucumber-testng', version: '6.7.0'
+
+    // https://mvnrepository.com/artifact/io.cucumber/cucumber-guice
+    implementation group: 'io.cucumber', name: 'cucumber-guice', version: '6.7.0'
+
+    // https://mvnrepository.com/artifact/com.google.inject/guice
+    // Using Guice for dependency injection
+    implementation group: 'com.google.inject', name: 'guice', version: '4.2.3'
+
+    // https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager
+    // Using webdrivermanager for auto downloading and initializing web driver
+    implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '4.2.2'
+
+    // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    // Selenium for Java
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
+
+    // https://mvnrepository.com/artifact/com.qasymphony.qtest/qtest-sdk-java
+    // qTest SDK for Java
+    implementation group: 'com.qasymphony.qtest', name: 'qtest-sdk-java', version: '1.4.10'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    // Core Jackson processing abstractions (aka Streaming API), implementation for JSON
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.2'
+
+    // https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+    // RestAssured used in API test
+    implementation group: 'io.rest-assured', name: 'rest-assured', version: '4.2.0'
+
+    // https://mvnrepository.com/artifact/com.aventstack/extentreports
+    // Extent Report for creating HTML report file
+    implementation group: 'com.aventstack', name: 'extentreports', version: '5.0.4'
+
+    // Use slf4j for logging
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.14.0'
+
+
+    // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
+    // Simple Json for handling JSONObject
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
+    implementation files("resources/test")
+}
+
+test {
+    // Create gradle wrapper if needed
+    dependsOn wrapper
+    // Transmit system properties, e.g. via execution command line so they could be accessed inside Java code
+    systemProperties(System.getProperties())
+    // Retrieve test suite file from command line, e.g: gradle test -DtestSuite=src/test/resources/API.xml
+    def testSuite = System.properties.getProperty("testSuite", 'src/test/resources/testng/testNG.xml')
+    def threads = System.properties.getProperty("threads", "1")
+
+    scanForTestClasses = false
+    useTestNG(){
+        jvmArgs(["-Ddataproviderthreadcount=${threads}"])
+        println "Test Suite File: " + testSuite
+        suites testSuite
+    }
+}

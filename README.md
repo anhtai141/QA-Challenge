@@ -1,3 +1,1 @@
-# QA-Challenge
-Guideline to run this project on PC
-- bbb
+This is an example automation project implemented with BDD Cucumber
